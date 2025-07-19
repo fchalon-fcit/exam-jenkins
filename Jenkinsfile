@@ -32,10 +32,10 @@ pipeline {
                         sleep 10
 
                         echo "Test de cast_service..."
-                        curl --retry 5 --retry-delay 3 --fail http://localhost:8080/api/v1/casts/docs
+                        curl --retry 5 --retry-delay 3 --fail http://localhost:8888/api/v1/casts/docs
 
                         echo "Test de movie_service..."
-                        curl --retry 5 --retry-delay 3 --fail http://localhost:8080/api/v1/movies/docs
+                        curl --retry 5 --retry-delay 3 --fail http://localhost:8888/api/v1/movies/docs
 
                         docker-compose down
                     '''

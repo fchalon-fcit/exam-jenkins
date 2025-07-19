@@ -136,11 +136,4 @@ pipeline {
         }
     }
 
-    post {
-        failure {
-            mail to: "contact@fc-it.fr",
-                 subject: "${env.JOB_NAME} - Build #${env.BUILD_ID} a échoué",
-                 body: "Consultez les logs : ${env.BUILD_URL}"
-        }
-    }
 }

@@ -23,24 +23,21 @@ pipeline {
             }
         }
 
-        stage('Docker Run') {
-            steps {
-                script {
-                    sh '''
-                        docker run -d -p 8000:8000 --name exam-app $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG
-                        sleep 10
-                    '''
-                }
-            }
-        }
-
         stage('Test Acceptance') {
             steps {
                 script {
                     sh '''
-                        curl -f http://localhost:8000/ || exit 1
-                        docker stop exam-app
-                        docker rm exam-app
+                        docker-compose -f docker-compose.yml up -d
+                        echo "Attente du démarrage des services..."
+                        sleep 10
+
+                        echo "Test de cast_service..."
+                        curl --retry 5 --retry-delay 3 --fail http://localhost:8080/api/v1/casts/docs
+
+                        echo "Test de movie_service..."
+                        curl --retry 5 --retry-delay 3 --fail http://localhost:8080/api/v1/movies/docs
+
+                        docker-compose down
                     '''
                 }
             }

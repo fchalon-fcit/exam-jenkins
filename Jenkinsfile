@@ -120,9 +120,6 @@ pipeline {
 
         stage('Déploiement en prod') {
 
-#            when {
-#                branch 'origin/main'
-#            }
             environment {
                 KUBECONFIG = credentials("config")
             }

@@ -119,9 +119,10 @@ pipeline {
         }
 
         stage('Déploiement en prod') {
-            when {
-                branch 'origin/main'
-            }
+
+#            when {
+#                branch 'origin/main'
+#            }
             environment {
                 KUBECONFIG = credentials("config")
             }
@@ -131,6 +132,7 @@ pipeline {
                 }
 
                 script {
+                    echo "Vérification de la branche. Jenkins voit : '${env.BRANCH_NAME}'"
                     sh '''
                         rm -rf .kube
                         mkdir .kube

@@ -26,17 +26,20 @@ spec:
         - name: movie-service
           image: "{{ .Values.movie_service.image.repository }}:{{ .Values.movie_service.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.movie_service.image.pullPolicy }}
+          env:
+          - name: DATABASE_URI
+            value: "postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev"
           ports:
             - name: http
-              containerPort: {{ .Values.movie_service.service.port }}
+              containerPort: 8000
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/v1/movies/docs # Adapte ce health check si nécessaire
+              path: /api/v1/movies/docs
               port: http
           readinessProbe:
             httpGet:
-              path: /api/v1/movies/docs # Adapte ce health check si nécessaire
+              path: /api/v1/movies/docs
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

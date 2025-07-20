@@ -26,17 +26,20 @@ spec:
         - name: cast-service
           image: "{{ .Values.cast_service.image.repository }}:{{ .Values.cast_service.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.cast_service.image.pullPolicy }}
+          env:
+          - name: DATABASE_URI
+            value: "postgresql://cast_db_username:cast_db_password@cast-db/cast_db_dev"
           ports:
             - name: http
-              containerPort: {{ .Values.cast_service.service.port }}
+              containerPort: 8000
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/v1/casts/docs # Adapte ce health check si nécessaire
+              path: /api/v1/casts/docs
               port: http
           readinessProbe:
             httpGet:
-              path: /api/v1/casts/docs # Adapte ce health check si nécessaire
+              path: /api/v1/casts/docs
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

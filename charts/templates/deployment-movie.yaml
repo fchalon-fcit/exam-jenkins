@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fastapiapp.fullname" . }}-movie
+  labels:
+    {{- include "fastapiapp.labels" . | nindent 4 }}
+    app.kubernetes.io/component: movie
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "fastapiapp.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: movie
+  template:
+    metadata:
+      labels:
+        {{- include "fastapiapp.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: movie
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "fastapiapp.serviceAccountName" . }}
+      containers:
+        - name: movie-service
+          image: "{{ .Values.movie_service.image.repository }}:{{ .Values.movie_service.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.movie_service.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.movie_service.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/movies/docs # Adapte ce health check si nécessaire
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/v1/movies/docs # Adapte ce health check si nécessaire
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

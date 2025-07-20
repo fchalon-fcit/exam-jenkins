@@ -129,7 +129,6 @@ pipeline {
                 }
 
                 script {
-                    echo "Vérification de la branche. Jenkins voit : '${env.BRANCH_NAME}'"
                     sh '''
                         rm -rf .kube
                         mkdir .kube
